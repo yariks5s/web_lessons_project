@@ -56,26 +56,38 @@ class Course(models.Model):
         return "Name: " + self.name + "," + \
                "Description: " + self.description
 
+# Model for quiz
+class QuestModel(models.Model):
+    question = models.CharField(max_length=200, null=True)
+    answer = models.CharField(max_length=200, null=True)
+
+    def __str__(self):
+        return self.question
+
 # Enrollment model as a lookup table with additional enrollment info
 class Enrollment(models.Model):
-    AUDIT = 'audit'
-    HONOR = 'honor'
-    COURSE_MODES = [
-        (AUDIT, 'Audit'),
-        (HONOR, 'Honor'),
-    ]
     # Add a learner foreign key
     learner = models.ForeignKey(Learner, on_delete=models.CASCADE)
     # Add a course foreign key
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     # Enrollment date
     date_enrolled = models.DateField(default=django.utils.timezone.now)
-    # Enrollment mode
-    mode = models.CharField(max_length=5, choices=COURSE_MODES, default=AUDIT)
-
+    objects = UserManager()
 
 # Lesson
 class Lesson(models.Model):
     title = models.CharField(max_length=200, default="Lesson title")
     course = models.ForeignKey(Course, null=True, on_delete=models.CASCADE)
     content = models.TextField()
+    questions = models.ForeignKey(QuestModel, null=True, on_delete=models.CASCADE)
+
+class CoursesLearnerRelations(models.Model):
+    learner = models.ForeignKey(Learner, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    objects = UserManager()
+
+class LessonsLearnerRelations(models.Model):
+    learner = models.ForeignKey(Learner, on_delete=models.CASCADE)
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
+    percentage = models.FloatField()
+

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Course, Instructor, Lesson, User, Learner
+from .models import Course, Instructor, Lesson, User, Learner, QuestModel
 
 
 # Register your models here.
@@ -8,6 +8,7 @@ from .models import Course, Instructor, Lesson, User, Learner
 class LessonInline(admin.StackedInline):
     model = Lesson
     extra = 5
+    inlines = []
 
 
 class CourseAdmin(admin.ModelAdmin):
@@ -40,3 +41,4 @@ admin.site.register(Course, CourseAdmin)
 admin.site.register(Instructor, InstructorAdmin)
 admin.site.register(User, UserAdmin)
 admin.site.register(Learner, LearnerAdmin)
+admin.site.register(QuestModel)

@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
+
 class NewLearnerForm(UserCreationForm):
     email = forms.EmailField(required=True)
     social_link = forms.URLField(max_length=200)
@@ -19,4 +20,3 @@ class NewLearnerForm(UserCreationForm):
         if commit:
             learner.save()
         return learner
-

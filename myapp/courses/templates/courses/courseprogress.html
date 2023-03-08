@@ -31,11 +31,11 @@
                <div class="row">
                   <div class="col-md-4 col-sm-12 left-rs">
                      <div class="navbar-header">
-                        <button type="button" id="top-menu" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false"> 
-                        <span class="sr-only">Toggle navigation</span> 
-                        <span class="icon-bar"></span> 
-                        <span class="icon-bar"></span> 
-                        <span class="icon-bar"></span> 
+                        <button type="button" id="top-menu" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
                         </button>
                         <a href="/courses/" class="navbar-brand"><img src="images/logo.png" alt="" /></a>
                      </div>
@@ -93,7 +93,7 @@
                   </div>
                </div>
             </div>
-            <!--/.container-fluid --> 
+            <!--/.container-fluid -->
          </nav>
       </header>
       <!-- Modal -->
@@ -142,7 +142,6 @@
                         <h3>Verified course</h3>
                         <div class="check-box"></div>
                      </div>
-                     <a href="/courses/courseid:{{ course.id }}/progress">Progress</a>
                      <a href="/courses/courseid:{{ course.id }}">Back to course</a>
                   </div>
                </div>
@@ -150,34 +149,25 @@
                   <div class="md-prod-page">
                      <div class="description-box">
                         <div class="dex-a">
-                           <h4>{{ lesson.title }}</h4>
-                           <p>{{ lesson.content }}</p>
+                           <h4>Your Progress:</h4>
+                           <p>Total lessons: {{ num_of_lessons }}</p>
                            <br>
-                           <p>{{ quiz.question }}</p>
-                           {% if not is_done %}
-                           <form action="." method="POST">
-                              {% csrf_token %}
-                              <div>
-                                 <textarea name="option" placeholder="Option:"></textarea>
-                              </div>
-                              <button style="margin-top:10px" type="submit">Sumbit</button>
-                              <a href="/courses/courseid:{{ course.id }}/lessonid:{{ lesson.id }}/quiz">Next</a>
-                           </form>
-                           {% endif %}
+                           <p>Number of lessons you've done: {{ num_of_done_lessons }}</p>
+                           <p>You've done {{ percent_of_done_lessons }}% of your course.</p>
                         </div>
                      </div>
                   </div>
                </div>
                <div class="col-md-3 col-sm-12">
                   <div class="price-box-right">
-                     <h4>Other lessons:</h4>
+                     <h4>Lessons:</h4>
                      {% for lessonobject in lessons %}
                            <ul>
-                              {% if lessonobject != lesson %}
+                              {% if lessonobject in done_lessons %}
                               <a href="/courses/courseid:{{ course.id }}/lessonid:{{ lessonobject.id }}"><h4>{{ lessonobject.title }}</h4></a>
                               {% else %}
                               <br> <br>
-                              <h3 align="center">{{ lessonobject.title }}</h3>
+                              <h>{{ lessonobject.title }}</h>
                               {% endif %}
                            </ul>
                            {% endfor %}
@@ -309,15 +299,15 @@
             </div>
          </div>
       </footer>
-      <!--main js--> 
-      <script src="js/jquery-1.12.4.min.js"></script> 
-      <!--bootstrap js--> 
-      <script src="js/bootstrap.min.js"></script> 
+      <!--main js-->
+      <script src="js/jquery-1.12.4.min.js"></script>
+      <!--bootstrap js-->
+      <script src="js/bootstrap.min.js"></script>
       <script src="js/bootstrap-select.min.js"></script>
-      <script src="js/slick.min.js"></script> 
-      <script src="js/select2.full.min.js"></script> 
-      <script src="js/wow.min.js"></script> 
-      <!--custom js--> 
+      <script src="js/slick.min.js"></script>
+      <script src="js/select2.full.min.js"></script>
+      <script src="js/wow.min.js"></script>
+      <!--custom js-->
       <script src="js/custom.js"></script>
    </body>
 </html>

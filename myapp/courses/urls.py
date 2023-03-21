@@ -12,4 +12,7 @@ urlpatterns = [
     path('login/', view=views.LoginView.login_request, name='login'),
     path('logout/', view=views.LoginView.logout_request, name='logout'),
     path('registration/', views.LoginView.registration_request, name='registration'),
+    path('profile/', views.ProfileView.as_view(), name='profile'),
+    path('import/', views.import_excel, name='import_excel'),
+    path('export/', views.export_excel, name='export_excel'),
 ]

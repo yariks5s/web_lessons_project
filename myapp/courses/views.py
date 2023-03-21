@@ -1,14 +1,12 @@
-from pyexpat.errors import messages
 from .forms import NewLearnerForm
 from django.contrib.auth import authenticate, login, logout, forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.db.backends.utils import logger
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect, Http404
-from django.urls import reverse
 from django.views import View, generic
 from .models import Course, Lesson, User, Learner, Instructor, LessonsLearnerRelations, CoursesLearnerRelations, Enrollment, QuestModel
-from django.contrib.auth.decorators import login_required
+import pandas as pd
+
 
 # Create your views here.
 def course_list(request):
@@ -18,6 +16,31 @@ def course_list(request):
                "</body>" \
                "</html>"
     return HttpResponse(content=template)
+
+def import_excel(request):
+    if request.method == 'POST':
+        file = request.FILES['myfile']
+        df = pd.read_excel(file, sheet_name='Sheet1')
+        for row in df.iterrows():
+            a = QuestModel.objects.create(question=row[1]['question'], answer=row[1]['answer'])
+        HttpResponse('File imported successfully.')
+        return redirect('courses:index')
+    return render(request, 'courses/import.html')
+
+def export_excel(request):
+    questions = QuestModel.objects.all()
+    q = []
+    a = []
+    for question in questions:
+        q.append(question.question)
+        a.append(question.answer)
+    data = {'question': q, 'answer': a}
+    df = pd.DataFrame(data)
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="data.xlsx"'
+    df.to_excel(response, index=False)
+    return response
+
 
 class LoginView(View):
     def login_request(request):
@@ -141,6 +164,8 @@ class CourseProgressView(View):
             num_of_lessons = len(lessons)
             num_of_done_lessons = len(done_lessons)
             percent_of_done_lessons = (num_of_done_lessons / num_of_lessons * 100).__round__(1)
+            show_list = ['Done', 'Not done']
+            progress_list = [percent_of_done_lessons, 100-percent_of_done_lessons]
             context = {'course': course,
                        'course_id': course_id,
                        'lessons': lessons,
@@ -151,6 +176,8 @@ class CourseProgressView(View):
                        'num_of_lessons': num_of_lessons,
                        'num_of_done_lessons': num_of_done_lessons,
                        'percent_of_done_lessons': percent_of_done_lessons,
+                       'show_list': show_list,
+                       'progress_list': progress_list,
                        }
             return render(request, 'courses/courseprogress.html', context)
         except Course.DoesNotExist:
@@ -234,3 +261,41 @@ class LessonView(View):
             return render(request, 'courses/lessonview.html', context)
         except Course.DoesNotExist:
             raise Http404("No lesson matches the given id.")
+
+class ProfileView(View):
+
+    # Handles get request
+    def get(self, request):
+        context = {}
+        # We get URL parameter pk from keyword argument list as course_id
+        user_id = request.user.id - 5
+        enrollments = Enrollment.objects.filter(learner_id=user_id)
+        courses = []
+        lessons = []
+        done_lessons = []
+        for enrollment in enrollments:
+            lessons.append(Lesson.objects.filter(course_id=enrollment.course_id))
+            courses.append(enrollment.course)
+
+        done_lessons = LessonsLearnerRelations.objects.filter(learner_id=user_id)
+        numLessons = 0
+        for i in range(len(lessons)):
+            numLessons += len(lessons[i])
+        numDoneLessons = len(done_lessons)
+        doneLessons = int(numDoneLessons / numLessons * 100)
+        notDoneLessons = int(100 - doneLessons)
+        show_list = ['Done', 'Not done']
+        progress_list = [doneLessons, notDoneLessons]
+        try:
+            users = User.objects.get(pk=user_id)
+            context = {'users': users,
+                       'numOfEnrollments': len(enrollments),
+                       'course_list': courses,
+                       'show_list': show_list,
+                       'progress_list': progress_list,
+                       }
+            return render(request, 'courses/profile.html', context)
+        except Course.DoesNotExist:
+            raise Http404("No course matches the given id.")
+
+

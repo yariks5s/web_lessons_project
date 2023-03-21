@@ -627,6 +627,34 @@ header .navbar-default .navbar-header {
 	background: #007dea;
 }
 
+.box-img1 {
+	background: #F5F5F5;
+	text-align: center;
+	padding-bottom: 30px;
+	height: 360px;
+	margin-bottom: 30px;
+	position: relative;
+	border-bottom: solid #007dea 3px;
+	transition: ease all 0.5s;
+	width: 270px;
+}
+
+.box-img1 h4 {
+	color: #fff;
+	padding-top: 35px;
+	padding-bottom: 30px;
+	font-size: 25px;
+	font-weight: 500;
+	transition: all 0.3s ease 0s;
+	letter-spacing: 0px;
+}
+
+.box-img1:hover {
+	cursor: pointer;
+	transform: scale(1.1);
+	background: #007dea;
+}
+
 .food {
 	position: absolute;
 	right: 0px;

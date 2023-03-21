@@ -51,7 +51,7 @@
                               {% if user.is_authenticated %}
                                <div class="rightalign">
                                    <div class="dropdown">
-                                       <button class="dropbtn">{{user.username}}</button>
+                                       <button class="dropbtn"><a href="/courses/profile">{{user.username}}</a></button>
                                        <div class="dropdown-content">
                                            <a href="{% url 'courses:logout' %}">Logout</a>
                                        </div>
@@ -144,7 +144,9 @@
                            {% if user.is_authenticated and not users.is_instructor and not exists %}
                            <a href="/courses/courseid:{{ course.id }}/enroll">Enroll</a>
                            {% endif %}
+                           {% if exists %}
                            <a href="/courses/courseid:{{ course.id }}/progress">Progress</a>
+                           {% endif %}
                      </div>
                      </div>
                      </div>
@@ -176,11 +178,19 @@
                         </div>
                         <div class="spe-a">
                            <h4>Lessons:</h4>
+                           {% if not exists %}
+                           {% for lesson in lessons %}
+                           <ul>
+                              <p>{{ lesson.title }}</p>
+                           </ul>
+                           {% endfor %}
+                           {% else %}
                            {% for lesson in lessons %}
                            <ul>
                               <a href="/courses/courseid:{{ course.id }}/lessonid:{{ lesson.id }}">{{ lesson.title }}</a>
                            </ul>
                            {% endfor %}
+                           {% endif %}
                         </div>
                      </div>
                   </div>

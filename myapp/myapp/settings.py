@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'easy_thumbnails',
     'crispy_forms',
     'courses',
+    'import_export',
 ]
 
 MIDDLEWARE = [

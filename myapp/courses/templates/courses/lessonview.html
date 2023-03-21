@@ -52,7 +52,7 @@
                               {% if user.is_authenticated %}
                                <div class="rightalign">
                                    <div class="dropdown">
-                                       <button class="dropbtn">{{user.username}}</button>
+                                       <button class="dropbtn"><a href="/courses/profile">{{user.username}}</a></button>
                                        <div class="dropdown-content">
                                            <a href="{% url 'courses:logout' %}">Logout</a>
                                        </div>

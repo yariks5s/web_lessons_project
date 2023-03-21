@@ -2,12 +2,13 @@
 <html lang="en">
    <head>
       <meta charset="UTF-8">
-      <title>{{ course.name }} -- {{ lesson.title }}</title>
+      <title>{{ user.username }} -- Details</title>
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
       <!--enable mobile device-->
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <!--fontawesome css-->
       {% load static %}
+      {% load thumbnail %}
       <link rel="stylesheet" href="{% static 'chamb/css/font-awesome.min.css' %}">
       <!--bootstrap css-->
       <link rel="stylesheet" href="{% static 'chamb/css/bootstrap.min.css' %}">
@@ -24,12 +25,9 @@
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.css"/>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" integrity="sha256-Uv9BNBucvCPipKQ2NS9wYpJmi8DTOEfTA/nH2aoJALw=" crossorigin="anonymous"></script>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css" integrity="sha256-aa0xaJgmK/X74WM224KMQeNQC2xYKwlAt08oZqjeF0E=" crossorigin="anonymous" />
-      <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
    </head>
    <body>
-   {% load crispy_forms_tags %}
       <header id="header" class="top-head">
          <!-- Static navbar -->
          <nav class="navbar navbar-default">
@@ -133,8 +131,8 @@
             <div class="row">
                <div class="col-md-12">
                   <div class="prod-page-title">
-                     <h2>{{ course.name }}</h2>
-                     <p>Publication date: <span>{{ course.pub_date }}</span></p>
+                     <h2>{{ user.username }}</h2>
+                     <p>Total courses enrolled: <span>{{ numOfEnrollments }}</span></p>
                   </div>
                </div>
             </div>
@@ -142,49 +140,38 @@
                <div class="col-md-2 col-sm-4">
                   <div class="left-profile-box-m prod-page">
                      <div class="pro-img">
-                        <img src="{{ course.image.url }}" alt="#" />
+                        <img src="{% static 'images/profile.jpg' %}" alt="#" />
                      </div>
-                     <div class="pof-text">
-                        <h3>Verified course</h3>
-                        <div class="check-box"></div>
-                     </div>
-                     <a href="/courses/courseid:{{ course.id }}">Back to course</a>
                   </div>
                </div>
-               <div class="col-md-7 col-sm-8">
-                  <div class="md-prod-page">
-                     <div class="description-box">
-                        <div class="dex-a">
-                           <h4>Your Progress:</h4>
-                           <p>Total lessons: {{ num_of_lessons }}</p>
-                           <br>
-                           <p>Number of lessons you've done: {{ num_of_done_lessons }}</p>
-                           <p>You've done {{ percent_of_done_lessons }}% of your course.</p>
 
-                           <div id="container" style="width: 75%;">
-                               <canvas id="pie-chart"></canvas>
-                           </div>
+
+                  {% for course in course_list %}
+                  <div class="col-lg-3 col-sm-6 col-md-3">
+                     <a href="/courses/courseid:{{ course.id }}">
+                        <div class="box-img">
+                           <h4>{{ course.name }}</h4>
+                           {% if course.image %}
+                           <center><img class="img-responsive" src="{{ course.image|thumbnail_url:'square_thumbnail' }}" /></center>
+
+                           {% else %}
+                           <img class="img-responsive" src="Courses/default.png" alt="#" />
+                           {% endif %}
+                           <br>
+                           <p>{{ course.description }}</p>
                         </div>
-                     </div>
+                     </a>
                   </div>
+                  {% endfor %}
+
+
                </div>
-               <div class="col-md-3 col-sm-12">
-                  <div class="price-box-right">
-                     <h4>Lessons:</h4>
-                     {% for lessonobject in lessons %}
-                           <ul>
-                              {% if lessonobject in done_lessons %}
-                              <a href="/courses/courseid:{{ course.id }}/lessonid:{{ lessonobject.id }}"><h4>{{ lessonobject.title }}</h4></a>
-                              {% else %}
-                              <br> <br>
-                              <h>{{ lessonobject.title }}</h>
-                              {% endif %}
-                           </ul>
-                           {% endfor %}
-                     <h5><i class="fa fa-clock-o" aria-hidden="true"></i> <strong>16 hours</strong> avg. responsive time</h5>
-                  </div>
+            <h3 style="text-align: center;">Percent of done lessons:</h3>
+<div id="container" style="width: 25%; margin: auto;">
+                  <canvas id="pie-chart"></canvas>
                </div>
             </div>
+               </div>
          </div>
       </div>
       <footer>
@@ -349,6 +336,5 @@
     };
 
   </script>
-
    </body>
 </html>
